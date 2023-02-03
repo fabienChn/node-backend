@@ -1,5 +1,4 @@
 const Blog = require('../models/blog');
-const requestErrorLogger = require('../helpers/requestErrorLogger');
 
 const blog_index = (req, res) => {
   Blog.find()
