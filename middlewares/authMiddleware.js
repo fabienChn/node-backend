@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 
 const requireAuth = (req, res, next) => {
   const token = req.cookies.jwt;
-  console.log('COOKIES', req.cookies, req.cookies.jwt);
 
   if (!token) {
     console.log('No JWT token');
@@ -10,8 +9,6 @@ const requireAuth = (req, res, next) => {
 
     return;
   }
-
-  console.log(token);
 
   jwt.verify(token, process.env.JWT_SIGN_IN_TOKEN, (error, decodedToken) => {
     if (error) {

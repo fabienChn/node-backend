@@ -9,8 +9,30 @@ const conversation_index = async (req, res) => {
   //   .then((result) => {
   //     res.json(result);
   //   });
-  res.json(req.cookies.jwt);
-  // const auth = await getAuth(req.cookies.jwt);
+
+  const auth = await getAuth(req.cookies.jwt);
+
+  const users = await User.find({ _id: { $ne: auth.id}});
+
+  const message = await Message
+      .findOne({ 
+        $or: [{ receiver: auth, emitter: users[0] }, { receiver: users[0], emitter: auth }]
+      })
+      .sort({ createdAt: -1 });
+
+  res.json(message);
+
+  // const messages = users.map(async (user) => {
+  //   return await Message
+  //     .findOne({ 
+  //       $or: [{ receiver: auth, emitter: user }, { receiver: user, emitter: auth }]
+  //     });
+  //     // .sort({ created_at: -1 })
+  //     // .exec();
+  // });
+
+  // console.log({ messages });
+  // res.json(messages);
 
   // const conversations = await Message.find({ $or: [ { 'receiver': auth }, { 'emitter': auth }]});
   // const conversations = Message.aggregate([
