@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const http = require('http');
@@ -22,15 +21,6 @@ const io = socketio(server, {
     credentials: true,
   }
 });
-
-// database
-const dbCredentials = `${process.env.USERNAME}:${process.env.PASSWORD}`;
-const dbURI = `mongodb+srv://${dbCredentials}@nodetuts.5fddx14.mongodb.net/?retryWrites=true&w=majority`;
-
-mongoose.set('strictQuery', true);
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => server.listen(4000))
-  .catch((err) => console.log(err));
 
 // middleware
 app.use(express.static('public'));
@@ -73,3 +63,9 @@ app.use(authRoutes);
 app.use((_, res) => {
   res.status(404).send('404 No found');
 });
+
+app.use((err, req, res, next) => {
+  res.status(500).send(err.message);
+});
+
+module.exports = server;

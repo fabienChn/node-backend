@@ -9,7 +9,7 @@ const Message = require('../models/message');
 dotenv.config();
 
 const dbCredentials = `${process.env.USERNAME}:${process.env.PASSWORD}`;
-const dbURI = `mongodb+srv://${dbCredentials}@nodetuts.5fddx14.mongodb.net/?retryWrites=true&w=majority`;
+const dbURI = `mongodb+srv://${dbCredentials}@nodetuts.5fddx14.mongodb.net/dev_db?retryWrites=true&w=majority`;
 
 mongoose.set('strictQuery', true);
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
