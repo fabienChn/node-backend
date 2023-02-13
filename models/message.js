@@ -13,11 +13,13 @@ const messageSchema = new Schema({
     default: false,
   },
   emitter: {
-    type: User, 
+    type: Schema.Types.ObjectId, 
+    ref: 'User',
     required: true,
   },
   receiver: {
-    type: User,
+    type: Schema.Types.ObjectId, 
+    ref: 'User',
     required: true,
   },
 }, { timestamps: true }); 

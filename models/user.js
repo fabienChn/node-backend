@@ -15,8 +15,13 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: [true, 'Please enter a password'],
-    minlength: [6, 'Minimum password length is characters'],
-  }
+    minlength: [6, 'Minimum password length is 6 characters'],
+  },
+  name: {
+    type: String,
+    require: [true, 'Please enter a name'],
+    minlength: [3, 'Minimum name length is 3 characters'],
+  },
 });
 
 userSchema.pre('save', async function (next) {

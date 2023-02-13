@@ -5,12 +5,15 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const http = require('http');
 const socketio = require('socket.io');
+const dotenv = require('dotenv');
 
 const blogRoutes = require('./routes/blogRoutes');
 const authRoutes = require('./routes/authRoutes');
-const { requireAuth } = require('./middleware/authMiddleware');
+const conversationRoutes = require('./routes/conversationRoutes');
+const { requireAuth } = require('./middlewares/authMiddleware');
 
 const app = express(); 
+dotenv.config();
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
@@ -21,10 +24,10 @@ const io = socketio(server, {
 });
 
 // database
-const username = 'fabienChn';
-const password = 'Henridu13.';
-const dbURI = `mongodb+srv://${username}:${password}@nodetuts.5fddx14.mongodb.net/?retryWrites=true&w=majority`;
+const dbCredentials = `${process.env.USERNAME}:${process.env.PASSWORD}`;
+const dbURI = `mongodb+srv://${dbCredentials}@nodetuts.5fddx14.mongodb.net/?retryWrites=true&w=majority`;
 
+mongoose.set('strictQuery', true);
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => server.listen(4000))
   .catch((err) => console.log(err));
@@ -63,12 +66,8 @@ io.on('connection', (socket) => {
 });
 
 // routes
-app.get('/', (req, res) => {
-  res.send({
-    he: 'hehe'
-  });
-});
 app.use('/blogs', requireAuth, blogRoutes);
+app.use('/conversations', requireAuth, conversationRoutes);
 app.use(authRoutes);
 
 app.use((_, res) => {

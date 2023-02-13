@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken');
-
 const User = require('../models/user');
 
 const handleErrors = (e) => {
-  let errors = { email: '', password: ''};
+  let errors = { email: '', password: '', name: ''};
 
   console.log(e.code);
 
@@ -31,27 +30,28 @@ const handleErrors = (e) => {
 };
 
 const maxAge = 3 * 24 * 60 * 60;
-const jwtSignInToken = 'net ninja secret';
 
 const createToken = (id) => {
-  return jwt.sign({ id }, jwtSignInToken, {
+  return jwt.sign({ id }, process.env.JWT_SIGN_IN_TOKEN, {
     expiresIn: maxAge, 
   });
 };
 
 const signup = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
   try {
-    const user = await User.create({ email, password });
+    const user = await User.create({ email, password, name });
     
-    const token = createToken(user._id);
+    const token = createToken(user.id);
+
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(201).json({ 
       user: {
         id: user.id,
         email: user.email,
+        name: user.name,
       },
     });
   } catch (e) {
@@ -65,13 +65,14 @@ const login = async (req, res) => {
   try {
     const user = await User.login(email, password);
 
-    const token = createToken(user._id);
+    const token = createToken(user.id);
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(200).json({ 
       user: {
         id: user.id,
         email: user.email,
+        name: user.name,
       },
     });
   } catch (e) {
